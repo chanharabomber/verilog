@@ -1,0 +1,20 @@
+module music(CLOCK_50,RST,AUD_ADCLRCK,AUD_ADCDAT,AUD_DACLRCK,AUD_DACDAT,AUD_XCK,AUD_BCLK,I2C_SCLK,I2C_SDAT);
+	
+	input CLOCK_50,RST;	//RST => SW0
+	input AUD_ADCDAT;//nouse
+	
+	output AUD_ADCLRCK,	//no use
+			 AUD_DACLRCK,
+			 AUD_DACDAT,
+			 AUD_XCK,
+			 AUD_BCLK,
+			 I2C_SCLK;
+	inout I2C_SDAT;
+	
+	assign AUD_ADCLRCK =1'b0;
+	
+	dataout(input bclk,input RST,input signed [15:0] dataL,input [15:0] dataR,input load,output dac_dat);
+	singen(CLK,RST,SIN_OUT);
+	WMclock_gen(input CLK_50,input RST,output xclk,output bclk,output lrclk,output load);
+	WM8731_config(input CLK,input RST,output sclk,inout sda);
+endmodule

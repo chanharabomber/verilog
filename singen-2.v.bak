@@ -1,0 +1,76 @@
+module singen(CLK,RST,SIN_OUT);
+	input CLK,RST;
+	output signed [15:0] SIN_OUT;
+	
+	reg [5:0] sin_cnt;
+
+	always @(posedge CLK or posedge RST) begin
+		if(RST)
+			sin_cnt <= 6'd0;
+		else if(sin_cnt >= 6'd47)
+			sin_cnt <= 6'd0;
+		else
+			sin_cnt <= sin_cnt + 1'b1;
+	end
+	
+	function signed [15:0] singenerater;
+		input [5:0] sin_cnt;
+		
+		case(sin_cnt)
+		
+			5'd0: singenerater = 16'd0;
+			5'd1: singenerater = 16'd2730;
+			5'd2: singenerater = 16'd5460;
+			5'd3: singenerater = 16'd8190;
+			5'd4: singenerater = 16'd10920;
+			5'd5: singenerater = 16'd13650;
+			5'd6: singenerater = 16'd16380;
+			5'd7: singenerater = 16'd19110;
+			5'd8: singenerater = 16'd21840;
+			5'd9: singenerater = 16'd24570;
+			5'd10: singenerater = 16'd27300;
+			5'd11: singenerater = 16'd30030;
+			5'd12: singenerater = 16'd32760;
+			5'd13: singenerater = 16'd30030;
+			5'd14: singenerater = 16'd27300;
+			5'd15: singenerater = 16'd24570;
+			5'd16: singenerater = 16'd21840;
+			5'd17: singenerater = 16'd19110;
+			5'd18: singenerater = 16'd16380;
+			5'd19: singenerater = 16'd13650;
+			5'd20: singenerater = 16'd10920;
+			5'd21: singenerater = 16'd8190;
+			5'd22: singenerater = 16'd5460;
+			5'd23: singenerater = 16'd2730;
+			5'd24: singenerater = 16'd0;
+			5'd25: singenerater = -16'd2730;
+			5'd26: singenerater = -16'd5460;
+			5'd27: singenerater = -16'd8190;
+			5'd28: singenerater = -16'd10920;
+			5'd29: singenerater = -16'd13650;
+			5'd30: singenerater = -16'd16380;
+			5'd31: singenerater = -16'd19110;
+			5'd32: singenerater = -16'd21840;
+			5'd33: singenerater = -16'd24570;
+			5'd34: singenerater = -16'd27300;
+			5'd35: singenerater = -16'd30030;
+			5'd36: singenerater = -16'd32760;
+			5'd37: singenerater = -16'd30030;
+			5'd38: singenerater = -16'd27300;
+			5'd39: singenerater = -16'd24570;
+			5'd40: singenerater = -16'd21840;
+			5'd41: singenerater = -16'd19110;
+			5'd42: singenerater = -16'd16380;
+			5'd43: singenerater = -16'd13650;
+			5'd44: singenerater = -16'd10920;
+			5'd45: singenerater = -16'd8190;
+			5'd46: singenerater = -16'd5460;
+			5'd47: singenerater = -16'd2730;
+			default: singenerater = 16'hxxxx;
+			
+		endcase
+	endfunction
+	
+	assign SIN_OUT = singenerater(sin_cnt);
+	
+endmodule

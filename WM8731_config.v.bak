@@ -1,0 +1,54 @@
+module WM8731_config(input CLK,input RST,output sclk,inout sda);
+
+reg [1:0] state;
+reg [3:0] word_cnt;
+
+wire busy,start;
+always @(posedge RST, posedge CLK) begin
+	if(RST)
+		state <= 2'd0;
+	else case(state)
+		2'd0:if(word_cnt < 4'd9) state <= 2'd1;
+		2'd1:if(busy) state <= 2'd2;
+		2'd2:if(!busy) state <= 2'd3;
+		2'd3:state <= 2'd0; 
+	endcase
+end
+
+always @(posedge RST , posedge CLK) begin
+	if(RST)
+		word_cnt <= 4'd0;
+	else if(state==2'd3) 
+		word_cnt <= word_cnt + 4'd1;
+
+end
+
+function [15:0] config_word(input [3:0] word_number);
+	case(word_number)
+		4'd0: config_word	=	16'h001A; //001A
+		4'd1: config_word	=	16'h0460; //7B
+		4'd2: config_word	=	16'h0660; //7B
+		4'd3: config_word	=	16'h0812;
+		4'd4: config_word	=	16'h0A06;
+		4'd5: config_word	=	16'h0C00;
+		4'd6: config_word	=	16'h0E01;
+		4'd7: config_word	=	16'h1002;
+		4'd8: config_word	=	16'h1201;
+		default: config_word	=	16'hxxxx;
+	endcase
+endfunction
+
+reg [7:0] clk_div;
+always @(posedge RST , posedge CLK) begin
+	if(RST)
+		clk_div <= 8'd0;
+	else 
+		clk_div <= clk_div + 8'd1;
+end
+	
+wire I2C_CLK = clk_div[7];
+assign start = (state == 2'd1);
+
+I2C I2C(.CLK(I2C_CLK),.RST(RST),.start(start),.busy(busy),.data(config_word(word_cnt)),.sda(sda),.sclk(sclk));
+	
+endmodule
